@@ -6,9 +6,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
+import edu.ap.bevers.les2_intents.model.Quote
 import edu.ap.bevers.les2_intents.model.User
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import okhttp3.*
 import java.net.URL
+
+
+private val json = Json { ignoreUnknownKeys = true }
 
 class MainActivity3 : AppCompatActivity() {
 
@@ -29,7 +36,10 @@ class MainActivity3 : AppCompatActivity() {
             Thread(Runnable {
                 val result = getURLContentsAsString(url)
                 runOnUiThread{
-                    showQuote(result)
+
+                    val quote = json.decodeFromString<List<Quote>>(result)
+                    showQuote(quote[0].body)
+                    Toast.makeText(this, quote[0].author, Toast.LENGTH_SHORT).show()
                     addPointsAndSave(10)
                 }
             }).start()
@@ -62,7 +72,7 @@ class MainActivity3 : AppCompatActivity() {
         findViewById<TextView>(R.id.tv_quote).text = quote
     }
 
-    fun getURLContentsAsString(ourUrl: URL): String {
+    private fun getURLContentsAsString(ourUrl: URL): String {
 
         val client = OkHttpClient()
         val request = Request.Builder()
