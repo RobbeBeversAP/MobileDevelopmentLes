@@ -3,7 +3,6 @@ package edu.ap.bevers.les2_intents
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -33,16 +32,16 @@ class MainActivity3 : AppCompatActivity() {
         findViewById<Button>(R.id.btn_generate).setOnClickListener {
             val url = URL("https://stoic-server.herokuapp.com/random")
 
-            Thread(Runnable {
+            Thread {
                 val result = getURLContentsAsString(url)
-                runOnUiThread{
+                runOnUiThread {
 
                     val quote = json.decodeFromString<List<Quote>>(result)
                     showQuote(quote[0].body)
                     Toast.makeText(this, quote[0].author, Toast.LENGTH_SHORT).show()
                     addPointsAndSave(10)
                 }
-            }).start()
+            }.start()
         }
 
 
