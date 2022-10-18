@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import edu.ap.bevers.les2_intents.model.Quote
 import edu.ap.bevers.les2_intents.model.User
+import edu.ap.bevers.les2_intents.persistance.DatabaseHelper
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import okhttp3.*
@@ -19,6 +20,8 @@ private val json = Json { ignoreUnknownKeys = true }
 class MainActivity3 : AppCompatActivity() {
 
     private var skillpoints: Int = 0
+
+    private var db: DatabaseHelper = DatabaseHelper(this)
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,16 +41,12 @@ class MainActivity3 : AppCompatActivity() {
 
                     val quote = json.decodeFromString<List<Quote>>(result)
                     showQuote(quote[0].body)
+                    db.addQuote(quote[0].body, quote[0].author, quote[0].quotesource)
                     Toast.makeText(this, quote[0].author, Toast.LENGTH_SHORT).show()
                     addPointsAndSave(10)
                 }
             }.start()
         }
-
-
-
-
-
     }
 
     private fun loadPoints() : Int
